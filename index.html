@@ -26,7 +26,7 @@
     .slideshow-container {
       flex-grow: 1;
       width: 100%;
-      max-width: 900px; /* 이미지와 버튼 너비 제한 */
+      max-width: 900px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -46,43 +46,33 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      gap: 10px;
-      margin: 10px auto 20px;
-      flex-wrap: nowrap;
-      max-width: 900px;
-      width: 100%;
+      gap: 8px;
+      padding: 10px;
+      margin-bottom: 10px;
+      overflow-x: auto; /* 모바일에서 줄바꿈 대신 스크롤 */
+      max-width: 100%;
+      white-space: nowrap;
     }
 
-    .action-button,
-    .audio-toggle-button,
-    .nav-button {
-      padding: 12px 24px;
+    .button-row button {
+      flex-shrink: 0;
+      padding: 10px 20px;
       background-color: #444;
       color: white;
       border: none;
       border-radius: 8px;
-      font-size: 1.1rem;
+      font-size: 1rem;
       cursor: pointer;
-      white-space: nowrap;
     }
 
-    .action-button:hover,
-    .audio-toggle-button:hover,
-    .nav-button:hover {
+    .button-row button:hover {
       background-color: #666;
     }
 
-    @media (max-width: 600px) {
-      .button-row {
-        flex-wrap: wrap; /* 작은 화면에서는 줄바꿈 허용 */
-        justify-content: center;
-      }
-
-      .action-button,
-      .audio-toggle-button,
-      .nav-button {
-        font-size: 1.2rem;
-        padding: 14px 28px;
+    @media (min-width: 600px) {
+      .button-row button {
+        font-size: 1.1rem;
+        padding: 12px 24px;
       }
     }
   </style>
@@ -94,15 +84,10 @@
 
   <!-- 버튼 영역 -->
   <div class="button-row">
-    <button class="nav-button" id="prevButton">이전</button>
-
-    <button class="action-button" onclick="location.href='https://sutcoin.github.io/sut-calculator/'">
-      SUT 계산기
-    </button>
-
-    <button class="audio-toggle-button" id="audioToggle">재생</button>
-
-    <button class="nav-button" id="nextButton">다음</button>
+    <button id="prevButton">이전</button>
+    <button onclick="location.href='https://sutcoin.github.io/sut-calculator/'">SUT 계산기</button>
+    <button id="audioToggle">재생</button>
+    <button id="nextButton">다음</button>
   </div>
 
   <!-- 배경음악 -->
@@ -111,22 +96,4 @@
     브라우저가 오디오를 지원하지 않습니다.
   </audio>
 
-  <script>
-    const imageList = [
-      '01.jpg', '02.jpg', '03.jpg', '04.jpg', '05.jpg',
-      '06.jpg', '07.jpg', '08.jpg', '09.jpg', '10.jpg'
-    ];
-
-    const slide = document.getElementById('slide');
-    const bgm = document.getElementById('bgm');
-    const audioToggle = document.getElementById('audioToggle');
-    const prevButton = document.getElementById('prevButton');
-    const nextButton = document.getElementById('nextButton');
-
-    let historyStack = [];
-    let currentIndex = null;
-
-    function getRandomIndex() {
-      let rand;
-      do {
-        rand = Math.floor(Mat
+  <!-- 스크립트는 body 마지막에 배치 (실행
