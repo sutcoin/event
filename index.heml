@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>자동 슬라이드쇼</title>
+  <style>
+    body {
+      margin: 0;
+      background-color: #000;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    .slideshow-container {
+      max-width: 90%;
+      max-height: 90vh;
+      overflow: hidden;
+    }
+    .slideshow-container img {
+      width: 100%;
+      height: auto;
+      border-radius: 10px;
+      box-shadow: 0 0 20px rgba(255,255,255,0.3);
+    }
+  </style>
+</head>
+<body>
+  <div class="slideshow-container">
+    <img id="slide" src="images/01.jpg" alt="슬라이드 이미지">
+  </div>
+
+  <!-- 배경음악 (자동 재생 & 반복) -->
+  <audio id="bgm" src="music/bgm.mp3" autoplay loop></audio>
+
+  <script>
+    const imageCount = 99;
+    let current = 1;
+
+    function showNextImage() {
+      current++;
+      if (current > imageCount) current = 1;
+
+      const slide = document.getElementById("slide");
+      const filename = current < 10 ? `0${current}.jpg` : `${current}.jpg`;
+      slide.src = `images/${filename}`;
+    }
+
+    setInterval(showNextImage, 3000); // 3초마다 전환
+  </script>
+</body>
+</html>
