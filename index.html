@@ -49,7 +49,7 @@
       gap: 8px;
       padding: 10px;
       margin-bottom: 10px;
-      overflow-x: auto; /* 모바일에서 줄바꿈 대신 스크롤 */
+      overflow-x: auto;
       max-width: 100%;
       white-space: nowrap;
     }
@@ -82,7 +82,6 @@
     <img id="slide" src="images/01.jpg" alt="슬라이드 이미지">
   </div>
 
-  <!-- 버튼 영역 -->
   <div class="button-row">
     <button id="prevButton">이전</button>
     <button onclick="location.href='https://sutcoin.github.io/sut-calculator/'">SUT 계산기</button>
@@ -90,10 +89,70 @@
     <button id="nextButton">다음</button>
   </div>
 
-  <!-- 배경음악 -->
   <audio id="bgm" preload="auto">
     <source src="music/bgm.mp3" type="audio/mpeg">
     브라우저가 오디오를 지원하지 않습니다.
   </audio>
 
-  <!-- 스크립트는 body 마지막에 배치 (실행
+  <!-- ✅ DOM이 완전히 로드된 후 스크립트 실행 -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const imageList = [
+        '01.jpg', '02.jpg', '03.jpg', '04.jpg', '05.jpg',
+        '06.jpg', '07.jpg', '08.jpg', '09.jpg', '10.jpg'
+      ];
+
+      const slide = document.getElementById('slide');
+      const bgm = document.getElementById('bgm');
+      const audioToggle = document.getElementById('audioToggle');
+      const prevButton = document.getElementById('prevButton');
+      const nextButton = document.getElementById('nextButton');
+
+      let historyStack = [];
+      let currentIndex = null;
+
+      function getRandomIndex() {
+        let rand;
+        do {
+          rand = Math.floor(Math.random() * imageList.length);
+        } while (rand === currentIndex);
+        return rand;
+      }
+
+      function showImage(index) {
+        currentIndex = index;
+        slide.src = `images/${imageList[index]}`;
+      }
+
+      // 초기 이미지 로드
+      const initialIndex = getRandomIndex();
+      showImage(initialIndex);
+
+      nextButton.addEventListener('click', () => {
+        if (currentIndex !== null) historyStack.push(currentIndex);
+        const nextIndex = getRandomIndex();
+        showImage(nextIndex);
+      });
+
+      prevButton.addEventListener('click', () => {
+        if (historyStack.length > 0) {
+          const lastIndex = historyStack.pop();
+          showImage(lastIndex);
+        } else {
+          alert("이전 이미지가 없습니다.");
+        }
+      });
+
+      audioToggle.addEventListener('click', () => {
+        if (bgm.paused) {
+          bgm.play();
+          audioToggle.textContent = '멈춤';
+        } else {
+          bgm.pause();
+          audioToggle.textContent = '재생';
+        }
+      });
+    });
+  </script>
+</body>
+</html>
