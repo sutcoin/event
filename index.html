@@ -5,9 +5,6 @@
   <title>SUT사용 후기</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <!-- Font Awesome 아이콘용 -->
-  <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
-
   <style>
     * {
       box-sizing: border-box;
@@ -50,7 +47,7 @@
       margin-bottom: 20px;
     }
 
-    .action-button {
+    .action-button, .audio-toggle-button {
       padding: 12px 24px;
       background-color: #444;
       color: white;
@@ -60,20 +57,8 @@
       cursor: pointer;
     }
 
-    .action-button:hover {
+    .action-button:hover, .audio-toggle-button:hover {
       background-color: #666;
-    }
-
-    .audio-toggle-button {
-      background: none;
-      border: none;
-      color: white;
-      font-size: 28px;
-      cursor: pointer;
-    }
-
-    .audio-toggle-button:hover {
-      color: #ccc;
     }
 
     .timer {
@@ -89,17 +74,13 @@
     }
 
     @media (max-width: 768px) {
-      .action-button {
+      .action-button, .audio-toggle-button {
         font-size: 1.4rem;
         padding: 14px 28px;
       }
 
       .timer {
         font-size: 1.4rem;
-      }
-
-      .audio-toggle-button {
-        font-size: 32px;
       }
     }
   </style>
@@ -115,9 +96,7 @@
     <button class="action-button" onclick="location.href='https://sutcoin.github.io/sut-calculator/'">
       SUT 계산기
     </button>
-    <button class="audio-toggle-button" id="audioToggle" aria-label="배경음악 재생/정지">
-      <i class="fas fa-play"></i>
-    </button>
+    <button class="audio-toggle-button" id="audioToggle">재생</button>
   </div>
 
   <!-- 배경음악 -->
@@ -137,7 +116,6 @@
     const timerElement = document.getElementById('timer');
     const bgm = document.getElementById('bgm');
     const audioToggle = document.getElementById('audioToggle');
-    const audioIcon = audioToggle.querySelector('i');
 
     function getRandomImage() {
       if (usedIndexes.length >= imageList.length) {
@@ -174,12 +152,10 @@
     audioToggle.addEventListener('click', () => {
       if (bgm.paused) {
         bgm.play();
-        audioIcon.classList.remove('fa-play');
-        audioIcon.classList.add('fa-pause');
+        audioToggle.textContent = '멈춤';
       } else {
         bgm.pause();
-        audioIcon.classList.remove('fa-pause');
-        audioIcon.classList.add('fa-play');
+        audioToggle.textContent = '재생';
       }
     });
   </script>
