@@ -41,7 +41,7 @@
     }
 
     .action-button {
-      margin: 20px;
+      margin: 10px;
       padding: 12px 24px;
       background-color: #444;
       color: white;
@@ -67,18 +67,37 @@
       color: #fff;
     }
 
-    /* 반응형 처리 */
+    .audio-control {
+      margin-bottom: 20px;
+      font-size: 30px;
+      cursor: pointer;
+      color: white;
+      background: none;
+      border: none;
+    }
+
+    .audio-control:hover {
+      color: #ccc;
+    }
+
     @media (max-width: 768px) {
       .action-button {
         font-size: 1.4rem;
-        padding: 14px 28px;
+        padding: 16px 30px;
       }
 
       .timer {
         font-size: 1.4rem;
       }
+
+      .audio-control {
+        font-size: 36px;
+      }
     }
   </style>
+
+  <!-- 아이콘: Font Awesome CDN -->
+  <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
 </head>
 <body>
   <div class="slideshow-container">
@@ -86,7 +105,12 @@
     <div class="timer" id="timer">20초</div>
   </div>
 
-  <!-- 변경된 버튼 -->
+  <!-- 재생/멈춤 토글 버튼 -->
+  <button class="audio-control" id="audioToggle" aria-label="음악 재생/정지">
+    <i class="fas fa-play"></i>
+  </button>
+
+  <!-- SUT 계산기로 이동 버튼 -->
   <button class="action-button" onclick="location.href='https://sutcoin.github.io/sut-calculator/'">
     SUT 계산기
   </button>
@@ -101,13 +125,15 @@
     const imageList = [
       '01.jpg', '02.jpg', '03.jpg', '04.jpg', '05.jpg',
       '06.jpg', '07.jpg', '08.jpg', '09.jpg', '10.jpg'
-      // 실제 존재하는 이미지만 여기에 추가
+      // 여기에 실제 이미지만 추가
     ];
 
     let usedIndexes = [];
     let countdown = 20;
     const timerElement = document.getElementById('timer');
     const bgm = document.getElementById('bgm');
+    const audioToggle = document.getElementById('audioToggle');
+    const audioIcon = audioToggle.querySelector('i');
 
     function getRandomImage() {
       if (usedIndexes.length >= imageList.length) {
@@ -118,7 +144,6 @@
       do {
         randIndex = Math.floor(Math.random() * imageList.length);
       } while (usedIndexes.includes(randIndex));
-
       usedIndexes.push(randIndex);
       return imageList[randIndex];
     }
@@ -140,27 +165,17 @@
     setInterval(updateTimer, 1000);
     showRandomImage();
 
-    // 브라우저 자동재생 정책 우회
-    function tryPlayBGM() {
+    // 음악 재생/정지 토글
+    audioToggle.addEventListener('click', () => {
       if (bgm.paused) {
-        bgm.volume = 1.0;
-        bgm.loop = true;
-        bgm.play().catch(err => {
-          console.log("자동 재생 차단됨. 사용자 클릭을 기다리는 중...");
-        });
+        bgm.play();
+        audioIcon.classList.remove('fa-play');
+        audioIcon.classList.add('fa-pause');
+      } else {
+        bgm.pause();
+        audioIcon.classList.remove('fa-pause');
+        audioIcon.classList.add('fa-play');
       }
-    }
-
-    // 사용자 클릭 시 배경음악 재생
-    window.addEventListener('click', () => {
-      tryPlayBGM();
-    }, { once: true });
-
-    // DOM 로딩 후 재생 시도
-    document.addEventListener("DOMContentLoaded", () => {
-      setTimeout(() => {
-        tryPlayBGM();
-      }, 100);
     });
   </script>
 </body>
