@@ -3,8 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <title>SUT사용 후기</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
   <style>
-    * { box-sizing: border-box; }
+    * {
+      box-sizing: border-box;
+    }
 
     body {
       margin: 0;
@@ -36,44 +40,59 @@
       box-shadow: 0 0 20px rgba(255,255,255,0.3);
     }
 
-    .back-button {
+    .action-button {
       margin: 20px;
-      padding: 10px 20px;
+      padding: 12px 24px;
       background-color: #444;
       color: white;
       border: none;
-      border-radius: 5px;
-      font-size: 16px;
+      border-radius: 8px;
+      font-size: 1.2rem;
       cursor: pointer;
     }
 
-    .back-button:hover {
+    .action-button:hover {
       background-color: #666;
     }
 
     .timer {
       position: absolute;
       top: 20px;
-      right: 30px;
+      right: 20px;
       background: rgba(0,0,0,0.5);
       padding: 10px 15px;
       border-radius: 10px;
-      font-size: 18px;
+      font-size: 1.2rem;
       font-weight: bold;
       color: #fff;
+    }
+
+    /* 반응형 처리 */
+    @media (max-width: 768px) {
+      .action-button {
+        font-size: 1.4rem;
+        padding: 14px 28px;
+      }
+
+      .timer {
+        font-size: 1.4rem;
+      }
     }
   </style>
 </head>
 <body>
   <div class="slideshow-container">
     <img id="slide" src="images/01.jpg" alt="슬라이드 이미지">
-    <div class="timer" id="timer">10초</div>
+    <div class="timer" id="timer">20초</div>
   </div>
 
-  <button class="back-button" onclick="history.back()">이전 사이트로 돌아가기</button>
+  <!-- 변경된 버튼 -->
+  <button class="action-button" onclick="location.href='https://sutcoin.github.io/sut-calculator/'">
+    SUT 계산기
+  </button>
 
-  <!-- 배경음악: 브라우저 정책 우회 (사용자 클릭 시 재생) -->
-  <audio id="bgm" loop>
+  <!-- 배경음악 -->
+  <audio id="bgm" preload="auto">
     <source src="music/bgm.mp3" type="audio/mpeg">
     브라우저가 오디오를 지원하지 않습니다.
   </audio>
@@ -82,11 +101,11 @@
     const imageList = [
       '01.jpg', '02.jpg', '03.jpg', '04.jpg', '05.jpg',
       '06.jpg', '07.jpg', '08.jpg', '09.jpg', '10.jpg'
-      // 실제 있는 이미지만 여기에 추가
+      // 실제 존재하는 이미지만 여기에 추가
     ];
 
     let usedIndexes = [];
-    let countdown = 10;
+    let countdown = 20;
     const timerElement = document.getElementById('timer');
     const bgm = document.getElementById('bgm');
 
@@ -94,10 +113,12 @@
       if (usedIndexes.length >= imageList.length) {
         usedIndexes = [];
       }
+
       let randIndex;
       do {
         randIndex = Math.floor(Math.random() * imageList.length);
       } while (usedIndexes.includes(randIndex));
+
       usedIndexes.push(randIndex);
       return imageList[randIndex];
     }
@@ -112,24 +133,35 @@
       timerElement.textContent = `${countdown}초`;
       if (countdown <= 0) {
         showRandomImage();
-        countdown = 10;
+        countdown = 20;
       }
     }
 
-    // 10초마다 타이머 감소 및 이미지 전환
     setInterval(updateTimer, 1000);
-
-    // 초기 이미지 로딩
     showRandomImage();
 
-    // 사용자 상호작용이 있어야 BGM 재생되므로 클릭 이벤트로 처리
-    window.addEventListener('click', () => {
+    // 브라우저 자동재생 정책 우회
+    function tryPlayBGM() {
       if (bgm.paused) {
+        bgm.volume = 1.0;
+        bgm.loop = true;
         bgm.play().catch(err => {
-          console.log('자동 재생 실패:', err);
+          console.log("자동 재생 차단됨. 사용자 클릭을 기다리는 중...");
         });
       }
+    }
+
+    // 사용자 클릭 시 배경음악 재생
+    window.addEventListener('click', () => {
+      tryPlayBGM();
     }, { once: true });
+
+    // DOM 로딩 후 재생 시도
+    document.addEventListener("DOMContentLoaded", () => {
+      setTimeout(() => {
+        tryPlayBGM();
+      }, 100);
+    });
   </script>
 </body>
 </html>
