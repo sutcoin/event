@@ -5,6 +5,9 @@
   <title>SUT사용 후기</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+  <!-- Font Awesome 아이콘용 -->
+  <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+
   <style>
     * {
       box-sizing: border-box;
@@ -40,8 +43,14 @@
       box-shadow: 0 0 20px rgba(255,255,255,0.3);
     }
 
+    .button-row {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
     .action-button {
-      margin: 10px;
       padding: 12px 24px;
       background-color: #444;
       color: white;
@@ -53,6 +62,18 @@
 
     .action-button:hover {
       background-color: #666;
+    }
+
+    .audio-toggle-button {
+      background: none;
+      border: none;
+      color: white;
+      font-size: 28px;
+      cursor: pointer;
+    }
+
+    .audio-toggle-button:hover {
+      color: #ccc;
     }
 
     .timer {
@@ -67,37 +88,21 @@
       color: #fff;
     }
 
-    .audio-control {
-      margin-bottom: 20px;
-      font-size: 30px;
-      cursor: pointer;
-      color: white;
-      background: none;
-      border: none;
-    }
-
-    .audio-control:hover {
-      color: #ccc;
-    }
-
     @media (max-width: 768px) {
       .action-button {
         font-size: 1.4rem;
-        padding: 16px 30px;
+        padding: 14px 28px;
       }
 
       .timer {
         font-size: 1.4rem;
       }
 
-      .audio-control {
-        font-size: 36px;
+      .audio-toggle-button {
+        font-size: 32px;
       }
     }
   </style>
-
-  <!-- 아이콘: Font Awesome CDN -->
-  <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
 </head>
 <body>
   <div class="slideshow-container">
@@ -105,15 +110,15 @@
     <div class="timer" id="timer">20초</div>
   </div>
 
-  <!-- 재생/멈춤 토글 버튼 -->
-  <button class="audio-control" id="audioToggle" aria-label="음악 재생/정지">
-    <i class="fas fa-play"></i>
-  </button>
-
-  <!-- SUT 계산기로 이동 버튼 -->
-  <button class="action-button" onclick="location.href='https://sutcoin.github.io/sut-calculator/'">
-    SUT 계산기
-  </button>
+  <!-- 버튼 영역 -->
+  <div class="button-row">
+    <button class="action-button" onclick="location.href='https://sutcoin.github.io/sut-calculator/'">
+      SUT 계산기
+    </button>
+    <button class="audio-toggle-button" id="audioToggle" aria-label="배경음악 재생/정지">
+      <i class="fas fa-play"></i>
+    </button>
+  </div>
 
   <!-- 배경음악 -->
   <audio id="bgm" preload="auto">
@@ -125,7 +130,6 @@
     const imageList = [
       '01.jpg', '02.jpg', '03.jpg', '04.jpg', '05.jpg',
       '06.jpg', '07.jpg', '08.jpg', '09.jpg', '10.jpg'
-      // 여기에 실제 이미지만 추가
     ];
 
     let usedIndexes = [];
@@ -144,6 +148,7 @@
       do {
         randIndex = Math.floor(Math.random() * imageList.length);
       } while (usedIndexes.includes(randIndex));
+
       usedIndexes.push(randIndex);
       return imageList[randIndex];
     }
