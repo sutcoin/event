@@ -2,26 +2,46 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
-  <title>자동 슬라이드쇼</title>
+  <title>랜덤 슬라이드쇼</title>
   <style>
     body {
       margin: 0;
       background-color: #000;
       display: flex;
+      flex-direction: column;
       justify-content: center;
       align-items: center;
       height: 100vh;
+      color: white;
+      font-family: sans-serif;
     }
     .slideshow-container {
+      flex-grow: 1;
       max-width: 90%;
       max-height: 90vh;
       overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
     .slideshow-container img {
       width: 100%;
       height: auto;
       border-radius: 10px;
       box-shadow: 0 0 20px rgba(255,255,255,0.3);
+    }
+    .back-button {
+      margin: 20px;
+      padding: 10px 20px;
+      background-color: #444;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    .back-button:hover {
+      background-color: #666;
     }
   </style>
 </head>
@@ -30,23 +50,37 @@
     <img id="slide" src="images/01.jpg" alt="슬라이드 이미지">
   </div>
 
-  <!-- 배경음악 (자동 재생 & 반복) -->
+  <!-- '이전 사이트로 돌아가기' 버튼 -->
+  <button class="back-button" onclick="history.back()">이전 사이트로 돌아가기</button>
+
+  <!-- 배경음악 -->
   <audio id="bgm" src="music/bgm.mp3" autoplay loop></audio>
 
   <script>
     const imageCount = 99;
-    let current = 1;
+    let usedIndexes = [];
 
-    function showNextImage() {
-      current++;
-      if (current > imageCount) current = 1;
+    function getRandomImageIndex() {
+      if (usedIndexes.length >= imageCount) {
+        usedIndexes = []; // 모두 사용했으면 초기화
+      }
 
-      const slide = document.getElementById("slide");
-      const filename = current < 10 ? `0${current}.jpg` : `${current}.jpg`;
-      slide.src = `images/${filename}`;
+      let rand;
+      do {
+        rand = Math.floor(Math.random() * imageCount) + 1;
+      } while (usedIndexes.includes(rand));
+
+      usedIndexes.push(rand);
+      return rand;
     }
 
-    setInterval(showNextImage, 3000); // 3초마다 전환
+    function showRandomImage() {
+      const rand = getRandomImageIndex();
+      const filename = rand < 10 ? `0${rand}.jpg` : `${rand}.jpg`;
+      document.getElementById("slide").src = `images/${filename}`;
+    }
+
+    setInterval(showRandomImage, 3000); // 3초마다 랜덤 이미지 표시
   </script>
 </body>
 </html>
