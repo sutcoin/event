@@ -45,9 +45,12 @@
       gap: 10px;
       align-items: center;
       margin-bottom: 20px;
+      flex-wrap: wrap;
     }
 
-    .action-button, .audio-toggle-button {
+    .action-button,
+    .audio-toggle-button,
+    .nav-button {
       padding: 12px 24px;
       background-color: #444;
       color: white;
@@ -57,30 +60,18 @@
       cursor: pointer;
     }
 
-    .action-button:hover, .audio-toggle-button:hover {
+    .action-button:hover,
+    .audio-toggle-button:hover,
+    .nav-button:hover {
       background-color: #666;
     }
 
-    .timer {
-      position: absolute;
-      top: 20px;
-      right: 20px;
-      background: rgba(0,0,0,0.5);
-      padding: 10px 15px;
-      border-radius: 10px;
-      font-size: 1.2rem;
-      font-weight: bold;
-      color: #fff;
-    }
-
     @media (max-width: 768px) {
-      .action-button, .audio-toggle-button {
+      .action-button,
+      .audio-toggle-button,
+      .nav-button {
         font-size: 1.4rem;
         padding: 14px 28px;
-      }
-
-      .timer {
-        font-size: 1.4rem;
       }
     }
   </style>
@@ -88,15 +79,19 @@
 <body>
   <div class="slideshow-container">
     <img id="slide" src="images/01.jpg" alt="슬라이드 이미지">
-    <div class="timer" id="timer">20초</div>
   </div>
 
   <!-- 버튼 영역 -->
   <div class="button-row">
+    <button class="nav-button" id="prevButton">이전</button>
+
     <button class="action-button" onclick="location.href='https://sutcoin.github.io/sut-calculator/'">
       SUT 계산기
     </button>
+
     <button class="audio-toggle-button" id="audioToggle">재생</button>
+
+    <button class="nav-button" id="nextButton">다음</button>
   </div>
 
   <!-- 배경음악 -->
@@ -111,44 +106,47 @@
       '06.jpg', '07.jpg', '08.jpg', '09.jpg', '10.jpg'
     ];
 
-    let usedIndexes = [];
-    let countdown = 20;
-    const timerElement = document.getElementById('timer');
+    const slide = document.getElementById('slide');
     const bgm = document.getElementById('bgm');
     const audioToggle = document.getElementById('audioToggle');
+    const prevButton = document.getElementById('prevButton');
+    const nextButton = document.getElementById('nextButton');
 
-    function getRandomImage() {
-      if (usedIndexes.length >= imageList.length) {
-        usedIndexes = [];
-      }
+    let historyStack = [];
+    let currentIndex = null;
 
-      let randIndex;
+    // 랜덤 이미지 가져오기
+    function getRandomIndex() {
+      let rand;
       do {
-        randIndex = Math.floor(Math.random() * imageList.length);
-      } while (usedIndexes.includes(randIndex));
-
-      usedIndexes.push(randIndex);
-      return imageList[randIndex];
+        rand = Math.floor(Math.random() * imageList.length);
+      } while (rand === currentIndex);
+      return rand;
     }
 
-    function showRandomImage() {
-      const filename = getRandomImage();
-      document.getElementById("slide").src = `images/${filename}`;
+    function showImage(index) {
+      currentIndex = index;
+      slide.src = `images/${imageList[index]}`;
     }
 
-    function updateTimer() {
-      countdown--;
-      timerElement.textContent = `${countdown}초`;
-      if (countdown <= 0) {
-        showRandomImage();
-        countdown = 20;
+    // 다음 이미지 (랜덤)
+    nextButton.addEventListener('click', () => {
+      if (currentIndex !== null) historyStack.push(currentIndex);
+      const nextIndex = getRandomIndex();
+      showImage(nextIndex);
+    });
+
+    // 이전 이미지
+    prevButton.addEventListener('click', () => {
+      if (historyStack.length > 0) {
+        const lastIndex = historyStack.pop();
+        showImage(lastIndex);
+      } else {
+        alert("이전 이미지가 없습니다.");
       }
-    }
+    });
 
-    setInterval(updateTimer, 1000);
-    showRandomImage();
-
-    // 음악 재생/정지 토글
+    // 음악 제어
     audioToggle.addEventListener('click', () => {
       if (bgm.paused) {
         bgm.play();
@@ -157,6 +155,12 @@
         bgm.pause();
         audioToggle.textContent = '재생';
       }
+    });
+
+    // 첫 이미지 랜덤으로 표시
+    window.addEventListener('DOMContentLoaded', () => {
+      const initialIndex = getRandomIndex();
+      showImage(initialIndex);
     });
   </script>
 </body>
